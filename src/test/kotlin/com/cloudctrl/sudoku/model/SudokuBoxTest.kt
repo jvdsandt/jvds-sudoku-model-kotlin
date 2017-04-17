@@ -1,8 +1,6 @@
 package com.cloudctrl.sudoku.model
-import com.cloudctrl.sudoku.model.SudokuBox
-import com.cloudctrl.sudoku.model.SudokuCell
+
 import org.junit.Test
-import java.util.HashMap
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
