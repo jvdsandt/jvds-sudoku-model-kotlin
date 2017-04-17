@@ -1,3 +1,5 @@
+package com.cloudctrl.sudoku.model
+
 class SudokuBoard(theBoxes: Collection<SudokuBox>) {
 
     val boxes = HashSet(theBoxes)

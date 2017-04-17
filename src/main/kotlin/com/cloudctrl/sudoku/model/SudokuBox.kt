@@ -1,3 +1,5 @@
+package com.cloudctrl.sudoku.model
+
 class SudokuBox(val name: String, val cells: Set<SudokuCell>) {
 
     constructor(name: String, minCell: SudokuCell, maxCell: SudokuCell) : this(name, createCells(minCell, maxCell))
