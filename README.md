@@ -1,0 +1,1 @@
+A simple Sudoku solver implemented in the [Kotlin programming language](https://kotlinlang.org/).
