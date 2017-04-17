@@ -5,11 +5,11 @@ class SudokuBox(val name: String, val cells: Set<SudokuCell>) {
     constructor(name: String, minCell: SudokuCell, maxCell: SudokuCell) : this(name, createCells(minCell, maxCell))
 
     fun maxX(): Int {
-        return cells.stream().mapToInt({ it.xpos }).max().asInt
+        return cells.stream().mapToInt({ it.x }).max().asInt
     }
 
     fun maxY(): Int {
-        return cells.stream().mapToInt({ it.ypos }).max().asInt
+        return cells.stream().mapToInt({ it.y }).max().asInt
     }
 
     fun includes(cell: SudokuCell): Boolean {
@@ -27,8 +27,8 @@ class SudokuBox(val name: String, val cells: Set<SudokuCell>) {
 
 private fun createCells(minCell: SudokuCell, maxCell: SudokuCell): Set<SudokuCell> {
     val cells = HashSet<SudokuCell>()
-    for (ypos in minCell.ypos..maxCell.ypos) {
-        for (xpos in minCell.xpos..maxCell.xpos) {
+    for (ypos in minCell.y..maxCell.y) {
+        for (xpos in minCell.x..maxCell.x) {
             cells.add(SudokuCell(xpos, ypos))
         }
     }
