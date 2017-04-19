@@ -3,6 +3,7 @@ package com.cloudctrl.sudoku.model
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
 
 class SudokuDataClassesTest {
 
@@ -27,5 +28,11 @@ class SudokuDataClassesTest {
         assertNotEquals(cell, copy2)
         assertEquals(99, copy2.x)
         assertEquals(2, copy2.y)
+    }
+
+    @Test fun testCompare() {
+        assertTrue { SudokuCell(1,1) < SudokuCell(2, 2) }
+        assertTrue { SudokuCell(1,1) < SudokuCell(2, 1) }
+        assertTrue { SudokuCell(1, 2) > SudokuCell(99, 1) }
     }
 }
