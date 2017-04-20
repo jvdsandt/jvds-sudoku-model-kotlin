@@ -25,4 +25,12 @@ class SudokuBoxTest {
         assertFalse { box.canAdd(SudokuCell(1, 1), 9, fixedCells) }
         assertTrue { box.canAdd(SudokuCell(4, 4), 9, fixedCells) }
     }
+
+    @Test fun testIn() {
+        val box = SudokuBox("test",
+                SudokuCell(1, 1),
+                SudokuCell(3, 3))
+        assertTrue { SudokuCell(2, 2) in box }
+        assertFalse { SudokuCell(4, 4) in box }
+    }
 }

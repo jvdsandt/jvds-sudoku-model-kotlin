@@ -12,12 +12,10 @@ class SudokuBox(val name: String, val cells: Set<SudokuCell>) {
         return cells.stream().mapToInt({ it.y }).max().asInt
     }
 
-    fun includes(cell: SudokuCell): Boolean {
-        return cells.contains(cell)
-    }
+    operator fun contains(cell: SudokuCell): Boolean = cells.contains(cell)
 
     fun canAdd(cell: SudokuCell, value: Int, fixedCells: Map<SudokuCell, Int>): Boolean {
-        if (!includes(cell)) {
+        if (cell !in this) {
             return true
         }
         return !(cells.any { fixedCells.get(it) == value })

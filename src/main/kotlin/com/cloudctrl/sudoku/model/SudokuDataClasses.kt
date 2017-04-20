@@ -2,7 +2,7 @@ package com.cloudctrl.sudoku.model
 
 /**
  * Data class to represent a cell on a Sudoku board.
- */
+ **/
 data class SudokuCell(val x: Int, val y: Int) : Comparable<SudokuCell> {
 
     override fun compareTo(other: SudokuCell) : Int {
