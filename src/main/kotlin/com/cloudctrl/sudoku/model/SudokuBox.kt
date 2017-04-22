@@ -21,6 +21,34 @@ class SudokuBox(val name: String, val cells: Set<SudokuCell>) {
         return !(cells.any { fixedCells.get(it) == value })
     }
 
+    fun getPossibleValues(cell: SudokuCell, values: Set<Int>, fixedCells: Map<SudokuCell, Int>) : Set<Int> {
+        val result = values.toMutableSet()
+        cells.forEach { eachCell ->
+            if (eachCell != cell) {
+                val value = fixedCells[eachCell]
+                if (value != null) {
+                    result.remove(value)
+                }
+            }
+        }
+        return result
+    }
+
+    fun findMoveWith(options: Map<SudokuCell, Set<Int>>) : SudokuMove? {
+        val cellsPerValue = mutableMapOf<Int, MutableSet<SudokuCell>>()
+        cells.forEach { eachCell ->
+            (options.getOrDefault(eachCell, emptySet())).forEach { eachValue ->
+                cellsPerValue.getOrPut(eachValue, { mutableSetOf() }).add(eachCell)
+            }
+        }
+        for ((eachValue, eachCells) in cellsPerValue) {
+            if (eachCells.size == 1) {
+                return SudokuMove(eachCells.single(), eachValue)
+            }
+        }
+        return null
+    }
+
 }
 
 private fun createCells(minCell: SudokuCell, maxCell: SudokuCell): Set<SudokuCell> {

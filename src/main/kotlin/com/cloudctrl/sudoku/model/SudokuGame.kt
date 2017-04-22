@@ -1,35 +1,171 @@
 package com.cloudctrl.sudoku.model
 
-abstract class SudokuGameBase {
+abstract class SudokuGameBase(val optionsPerCell: Map<SudokuCell, Set<Int>>) {
 
-    abstract operator fun get(cell: SudokuCell) : Int?
+    abstract val game: SudokuGame
 
-    operator fun get(cells : Collection<SudokuCell>) : Collection<Int> {
+    abstract val solvedCells: Map<SudokuCell, Int>
+
+    abstract val numberOfCellsToSolve: Int
+
+    abstract operator fun get(cell: SudokuCell): Int?
+
+    operator fun get(x: Int, y: Int) = this[SudokuCell(x, y)]
+
+    operator fun get(cells: Collection<SudokuCell>): Collection<Int> {
         return cells.map { this[it] }.filterNotNull()
     }
 
     fun isOpen(cell: SudokuCell) = get(cell) == null
+
+    fun isSolved() = numberOfCellsToSolve == 0
+
+    fun firstSingleOptionMove(): SudokuMove? {
+        for ((eachCell, cellOptions) in optionsPerCell) {
+            if (cellOptions.size == 1) {
+                return SudokuMove(eachCell, cellOptions.single())
+            }
+        }
+        return null
+    }
+
+    fun doNextMove(): SudokuGameBase {
+        val move = firstSingleOptionMove()
+        if (move != null) {
+            return newMove(move)
+        }
+        game.board.boxes.forEach { eachBox ->
+            val move = eachBox.findMoveWith(optionsPerCell)
+            if (move != null) {
+                return newMove(move)
+            }
+        }
+        return newGuessMove(takeGuess())
+    }
+
+    fun asSolvedGame() : SudokuGameBase {
+        return if (isSolved()) this else this.doNextMove().asSolvedGame()
+    }
+
+    private fun newMove(move: SudokuMove): SudokuGameBase {
+        val newOptions = game.board.processMove(optionsPerCell, move)
+        return SudokuAutoGame(this, move, false, newOptions)
+    }
+
+    private fun newGuessMove(move: SudokuMove): SudokuGameBase {
+        val newOptions = game.board.processMove(optionsPerCell, move)
+        return SudokuAutoGame(this, move, true, newOptions)
+    }
+
+    private fun takeGuess() : SudokuMove {
+        var cell: SudokuCell? = null
+        var values: Set<Int>? = null
+        for ((eachCell, eachValues) in optionsPerCell) {
+            if (values == null || values.size > eachValues.size) {
+                cell = eachCell
+                values = eachValues
+            }
+        }
+        if (cell != null && values != null) {
+            return SudokuMove(cell, values.first())
+        } else {
+            throw IllegalStateException()
+        }
+    }
 }
 
-class SudokuGame(val board: SudokuBoard, val fixedCells: Map<SudokuCell, Int>) : SudokuGameBase() {
+class SudokuGame(val board: SudokuBoard, val fixedCells: Map<SudokuCell, Int>) :
+        SudokuGameBase(board.getPossibleValuesPerCell(fixedCells)) {
+
+    override val game = this
+
+    override val solvedCells = emptyMap<SudokuCell, Int>()
+
+    override val numberOfCellsToSolve: Int = board.relevantCells().size - fixedCells.size
 
     override operator fun get(cell: SudokuCell) = fixedCells.get(cell)
 
-    fun findOpenCellValues(): Map<SudokuCell, Set<Int>> {
-        val cellOptions = mutableMapOf<SudokuCell, Set<Int>>()
-        board.boxes.forEach { eachBox ->
-            val openValues = board.allValues.subtract(this[eachBox.cells])
-            eachBox.cells.forEach{ eachCell ->
-                if (isOpen(eachCell)) {
-                    val possibleValues = cellOptions.getOrDefault(eachCell, board.allValues).subtract(openValues)
-                    if (possibleValues.isEmpty()) {
-                       throw RuntimeException("unsolvable")
-                    }
-                    cellOptions.put(eachCell, possibleValues)
+}
+
+class SudokuGameBuilder(val board: SudokuBoard) {
+
+    var fixedCells = mutableMapOf<SudokuCell, Int>()
+
+    constructor() : this(SudokuBoard.default9x9())
+
+    companion object {
+
+        fun newGameFromNumberLine(numberLine: String): SudokuGame {
+            val board = SudokuBoard.default9x9()
+            if (numberLine.length < board.maxX * board.maxY) {
+                throw IllegalArgumentException("Not enough numbers provided")
+            }
+            val builder = SudokuGameBuilder(board)
+            builder.initFromNumberLine(numberLine)
+            return builder.newGame()
+        }
+    }
+
+
+    fun canAdd(cell: SudokuCell, value: Int) = board.canAdd(cell, value, fixedCells)
+
+    fun fix(cell: SudokuCell, value: Int) {
+        if (canAdd(cell, value)) {
+            fixedCells[cell] = value
+        } else {
+            throw IllegalArgumentException("Cannot add this cell")
+        }
+    }
+
+    fun fix(x: Int, y: Int, value: Int) = fix(SudokuCell(x, y), value)
+
+    fun fix(values: Array<Array<Int>>) {
+        values.forEachIndexed { rowNr, eachRow ->
+            eachRow.forEachIndexed { colNr, eachValue ->
+                if (eachValue > 0) {
+                    fix(SudokuCell(colNr + 1, rowNr + 1), eachValue)
                 }
             }
         }
-        return cellOptions
     }
+
+    fun initFromNumberLine(numberLine: String) {
+        for (y in 0..board.maxY - 1) {
+            for (x in 0..board.maxX - 1) {
+                val value = numberLine[y * board.maxX + x]
+                if (value < '0' || value > '9') {
+                    throw IllegalArgumentException("Invalid cell value")
+                }
+                if (value != '0') {
+                    fix(x + 1, y + 1, Character.digit(value, 10))
+                }
+            }
+        }
+    }
+
+    fun newGame(): SudokuGame {
+        return SudokuGame(board, fixedCells.toMap())
+    }
+}
+
+abstract class SudokuGamePlay(val previousPlay: SudokuGameBase, val lastMove: SudokuMove, val guessed: Boolean, optionsPerCell: Map<SudokuCell, Set<Int>>) :
+        SudokuGameBase(optionsPerCell) {
+
+    override val game = previousPlay.game
+
+    override val solvedCells = previousPlay.solvedCells.plus(lastMove.cell to lastMove.value)
+
+    override val numberOfCellsToSolve = game.numberOfCellsToSolve - solvedCells.size
+
+    override operator fun get(cell: SudokuCell): Int? {
+
+        return game[cell]
+    }
+
+}
+
+class SudokuAutoGame(previousPlay: SudokuGameBase, lastMove: SudokuMove, guessed: Boolean, optionsPerCell: Map<SudokuCell, Set<Int>>) :
+        SudokuGamePlay(previousPlay, lastMove, guessed, optionsPerCell) {
+
 
 }

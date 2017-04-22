@@ -15,14 +15,83 @@ class SudokuBoard(theBoxes: Collection<SudokuBox>) {
     val boxes = HashSet(theBoxes)
     val maxX = boxes.stream().mapToInt { it.maxX() }.max().asInt
     val maxY = boxes.stream().mapToInt { it.maxY() }.max().asInt
-    val allValues = (1..boxes.stream().mapToInt { it.cells.size }.max().asInt).toSet()
+    val allValues: Set<Int> = (1..boxes.stream().mapToInt { it.cells.size }.max().asInt).toSet()
 
     operator fun contains(cell: SudokuCell): Boolean {
         return boxes.any { cell in it }
     }
 
-    fun canAdd(cell: SudokuCell, value: Int, fixedCells: Map<SudokuCell, Int>): Boolean {
+    fun canAdd(cell: SudokuCell, value: Int, fixedCells: Map<SudokuCell, Int>) : Boolean {
         return boxes.all { it.canAdd(cell, value, fixedCells) }
+    }
+
+    fun boxesFor(cell: SudokuCell, action: (SudokuBox) -> Unit) {
+        boxes.forEach { eachBox ->
+            if (cell in eachBox) {
+                action.invoke(eachBox)
+            }
+        }
+    }
+
+    fun relevantCells() : Set<SudokuCell> {
+        val visitedCells = mutableSetOf<SudokuCell>()
+        boxes.forEach { eachBox -> visitedCells.addAll(eachBox.cells) }
+        return visitedCells
+    }
+
+    fun relevantCellsDo(action: (SudokuCell) -> Unit) {
+        val visitedCells = mutableSetOf<SudokuCell>()
+        boxes.forEach { eachBox ->
+            eachBox.cells.forEach { eachCell ->
+                if (eachCell !in visitedCells) {
+                    action.invoke(eachCell)
+                    visitedCells.add(eachCell)
+                }
+            }
+        }
+    }
+
+    fun cellSharingBoxDo(cell: SudokuCell, action: (SudokuCell) -> Unit) {
+        val visitedCells = mutableSetOf<SudokuCell>()
+        boxes.forEach { eachBox ->
+            if (cell in eachBox) {
+                eachBox.cells.forEach { eachCell ->
+                    if (eachCell != cell && eachCell !in visitedCells) {
+                        action.invoke(eachCell)
+                        visitedCells.add(eachCell)
+                    }
+                }
+            }
+        }
+    }
+
+    fun getPossibleValues(cell : SudokuCell, fixedCells: Map<SudokuCell, Int>) : Set<Int> {
+        var values = allValues
+        boxesFor(cell, { eachBox ->
+            values = eachBox.getPossibleValues(cell, values, fixedCells)
+        })
+        return values
+    }
+
+    fun getPossibleValuesPerCell(fixedCells: Map<SudokuCell, Int>) : Map<SudokuCell, Set<Int>> {
+        val cellOptions = mutableMapOf<SudokuCell, Set<Int>>()
+        relevantCellsDo { eachCell ->
+            cellOptions[eachCell] = getPossibleValues(eachCell, fixedCells)
+        }
+        return cellOptions
+    }
+
+    fun processMove(optionsPerCell: Map<SudokuCell, Set<Int>>, move: SudokuMove) : Map<SudokuCell, Set<Int>> {
+        val newOptions = optionsPerCell.toMutableMap()
+        newOptions[move.cell] = newOptions[move.cell]!!.minus(move.value)
+        cellSharingBoxDo(move.cell, { eachCell ->
+            var newValues = newOptions[eachCell]
+            if (newValues != null) {
+                newValues = newValues.minus(move.value)
+                newOptions[eachCell] = newValues
+            }
+        })
+        return newOptions
     }
 }
 
