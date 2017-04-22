@@ -12,6 +12,7 @@ class SudokuBoardTest {
         assertEquals(9, board.maxX)
         assertEquals(9, board.maxY)
         assertEquals(27, board.boxes.size)
+        assertEquals((1..9).toSet(), board.allValues)
     }
 
     @Test fun testIn() {

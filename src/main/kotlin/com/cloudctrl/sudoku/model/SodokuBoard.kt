@@ -15,6 +15,7 @@ class SudokuBoard(theBoxes: Collection<SudokuBox>) {
     val boxes = HashSet(theBoxes)
     val maxX = boxes.stream().mapToInt { it.maxX() }.max().asInt
     val maxY = boxes.stream().mapToInt { it.maxY() }.max().asInt
+    val allValues = (1..boxes.stream().mapToInt { it.cells.size }.max().asInt).toSet()
 
     operator fun contains(cell: SudokuCell): Boolean {
         return boxes.any { cell in it }
