@@ -56,12 +56,13 @@ class SudokuGameTest {
 
     @Test fun testSolveHardGame() {
         val game = sampleHardGame()
-        assertEquals(58, game.numberOfCellsToSolve)
+        assertEquals(60, game.numberOfCellsToSolve)
 
         val play = game.doNextMove()
-        assertEquals(57, play.numberOfCellsToSolve)
+        assertEquals(59, play.numberOfCellsToSolve)
 
         val solvedPlay = play.asSolvedGame()
+        assertTrue(sampleHardGameSolution().contentDeepEquals(solvedPlay.asArray()))
         System.out.println("Solved hard game:\n${solvedPlay}")
     }
 }
