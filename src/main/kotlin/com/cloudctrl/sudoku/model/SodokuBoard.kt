@@ -76,14 +76,16 @@ class SudokuBoard(theBoxes: Collection<SudokuBox>) {
     fun getPossibleValuesPerCell(fixedCells: Map<SudokuCell, Int>) : Map<SudokuCell, Set<Int>> {
         val cellOptions = mutableMapOf<SudokuCell, Set<Int>>()
         relevantCellsDo { eachCell ->
-            cellOptions[eachCell] = getPossibleValues(eachCell, fixedCells)
+            if (!fixedCells.containsKey(eachCell)) {
+                cellOptions[eachCell] = getPossibleValues(eachCell, fixedCells)
+            }
         }
         return cellOptions
     }
 
     fun processMove(optionsPerCell: Map<SudokuCell, Set<Int>>, move: SudokuMove) : Map<SudokuCell, Set<Int>> {
         val newOptions = optionsPerCell.toMutableMap()
-        newOptions[move.cell] = newOptions[move.cell]!!.minus(move.value)
+        newOptions.remove(move.cell)
         cellSharingBoxDo(move.cell, { eachCell ->
             var newValues = newOptions[eachCell]
             if (newValues != null) {

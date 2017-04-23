@@ -33,6 +33,8 @@ class SudokuGameTest {
                 arrayOf(7, 0, 3, 0, 1, 8, 0, 0, 0)))
 
         val game = builder.newGame()
+        assertEquals(game[1, 1], null)
+        assertEquals(game[1, 9], 7)
     }
 
     @Test fun testBuildInvalid() {
@@ -45,9 +47,21 @@ class SudokuGameTest {
         val game = sampleSimpleGame()
         assertEquals(45, game.numberOfCellsToSolve)
 
-        var play = game.doNextMove()
+        val play = game.doNextMove()
         assertEquals(44, play.numberOfCellsToSolve)
 
         val solvedPlay = play.asSolvedGame()
+        System.out.println("Solved simple game:\n${solvedPlay}")
+    }
+
+    @Test fun testSolveHardGame() {
+        val game = sampleHardGame()
+        assertEquals(58, game.numberOfCellsToSolve)
+
+        val play = game.doNextMove()
+        assertEquals(57, play.numberOfCellsToSolve)
+
+        val solvedPlay = play.asSolvedGame()
+        System.out.println("Solved hard game:\n${solvedPlay}")
     }
 }

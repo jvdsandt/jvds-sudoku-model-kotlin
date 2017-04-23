@@ -35,29 +35,59 @@ abstract class SudokuGameBase(val optionsPerCell: Map<SudokuCell, Set<Int>>) {
             return newMove(move)
         }
         game.board.boxes.forEach { eachBox ->
-            val move = eachBox.findMoveWith(optionsPerCell)
-            if (move != null) {
-                return newMove(move)
+            val bmove = eachBox.findMoveWith(optionsPerCell)
+            if (bmove != null) {
+                return newMove(bmove)
             }
         }
         return newGuessMove(takeGuess())
     }
 
-    fun asSolvedGame() : SudokuGameBase {
+    abstract fun goBackAndMove(): SudokuGamePlay
+
+    fun asSolvedGame(): SudokuGameBase {
         return if (isSolved()) this else this.doNextMove().asSolvedGame()
+    }
+
+    fun asArray(): Array<Array<Int>> {
+        val result = Array(game.board.maxY, { _ -> Array(game.board.maxX, { _ -> 0 })})
+        for (y in 0..game.board.maxY-1) {
+            for (x in 0..game.board.maxX-1) {
+                result[y][x] = get(x+1, y+1) ?: 0
+            }
+        }
+        return result
+    }
+
+    override fun toString(): String {
+        val sb = StringBuilder()
+        for (y in 1..game.board.maxY) {
+            for (x in 1..game.board.maxX) {
+                sb.append(' ')
+                sb.append(get(x, y) ?: 0)
+            }
+            sb.append("\n")
+        }
+        return sb.toString()
     }
 
     private fun newMove(move: SudokuMove): SudokuGameBase {
         val newOptions = game.board.processMove(optionsPerCell, move)
+        if (newOptions.any { (_, values) -> values.isEmpty() }) {
+            return goBackAndMove()
+        }
         return SudokuAutoGame(this, move, false, newOptions)
     }
 
     private fun newGuessMove(move: SudokuMove): SudokuGameBase {
         val newOptions = game.board.processMove(optionsPerCell, move)
+        if (newOptions.any { (_, values) -> values.isEmpty() }) {
+            return goBackAndMove()
+        }
         return SudokuAutoGame(this, move, true, newOptions)
     }
 
-    private fun takeGuess() : SudokuMove {
+    private fun takeGuess(): SudokuMove {
         var cell: SudokuCell? = null
         var values: Set<Int>? = null
         for ((eachCell, eachValues) in optionsPerCell) {
@@ -85,6 +115,9 @@ class SudokuGame(val board: SudokuBoard, val fixedCells: Map<SudokuCell, Int>) :
 
     override operator fun get(cell: SudokuCell) = fixedCells.get(cell)
 
+    override fun goBackAndMove(): SudokuGamePlay {
+        throw IllegalStateException()
+    }
 }
 
 class SudokuGameBuilder(val board: SudokuBoard) {
@@ -158,14 +191,20 @@ abstract class SudokuGamePlay(val previousPlay: SudokuGameBase, val lastMove: Su
     override val numberOfCellsToSolve = game.numberOfCellsToSolve - solvedCells.size
 
     override operator fun get(cell: SudokuCell): Int? {
-
-        return game[cell]
+        val value = solvedCells.get(cell)
+        return if (value != null) value else game[cell]
     }
-
 }
 
 class SudokuAutoGame(previousPlay: SudokuGameBase, lastMove: SudokuMove, guessed: Boolean, optionsPerCell: Map<SudokuCell, Set<Int>>) :
         SudokuGamePlay(previousPlay, lastMove, guessed, optionsPerCell) {
 
-
+    override fun goBackAndMove(): SudokuGamePlay {
+        if (!guessed) {
+            return previousPlay.goBackAndMove()
+        }
+        val newOptions = previousPlay.optionsPerCell.toMutableMap()
+        newOptions[lastMove.cell] = newOptions[lastMove.cell]!!.minus(lastMove.value)
+        return SudokuAutoGame(previousPlay, lastMove, false, newOptions)
+    }
 }
