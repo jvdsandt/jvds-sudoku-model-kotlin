@@ -51,7 +51,7 @@ class SudokuGameTest {
         assertEquals(44, play.numberOfCellsToSolve)
 
         val solvedPlay = play.asSolvedGame()
-        System.out.println("Solved simple game:\n${solvedPlay}")
+        println("Solved simple game:\n${solvedPlay}")
     }
 
     @Test fun testSolveHardGame() {
@@ -63,6 +63,6 @@ class SudokuGameTest {
 
         val solvedPlay = play.asSolvedGame()
         assertTrue(sampleHardGameSolution().contentDeepEquals(solvedPlay.asArray()))
-        System.out.println("Solved hard game:\n${solvedPlay}")
+        println("Solved hard game:\n${solvedPlay}")
     }
 }
