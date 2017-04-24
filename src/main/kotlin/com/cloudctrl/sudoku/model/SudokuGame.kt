@@ -50,10 +50,10 @@ abstract class SudokuGameBase(val optionsPerCell: Map<SudokuCell, Set<Int>>) {
     }
 
     fun asArray(): Array<Array<Int>> {
-        val result = Array(game.board.maxY, { _ -> Array(game.board.maxX, { _ -> 0 })})
-        for (y in 0..game.board.maxY-1) {
-            for (x in 0..game.board.maxX-1) {
-                result[y][x] = get(x+1, y+1) ?: 0
+        val result = Array(game.board.maxY, { _ -> Array(game.board.maxX, { _ -> 0 }) })
+        for (y in 0..game.board.maxY - 1) {
+            for (x in 0..game.board.maxX - 1) {
+                result[y][x] = get(x + 1, y + 1) ?: 0
             }
         }
         return result
@@ -113,7 +113,7 @@ class SudokuGame(val board: SudokuBoard, val fixedCells: Map<SudokuCell, Int>) :
 
     override val numberOfCellsToSolve: Int = board.relevantCells().size - fixedCells.size
 
-    override operator fun get(cell: SudokuCell) = fixedCells.get(cell)
+    override operator fun get(cell: SudokuCell) = fixedCells[cell]
 
     override fun goBackAndMove(): SudokuGamePlay {
         throw IllegalStateException()
@@ -186,13 +186,12 @@ abstract class SudokuGamePlay(val previousPlay: SudokuGameBase, val lastMove: Su
 
     override val game = previousPlay.game
 
-    override val solvedCells = previousPlay.solvedCells.plus(lastMove.cell to lastMove.value)
+    override val solvedCells: Map<SudokuCell, Int> by lazy { previousPlay.solvedCells.plus(lastMove.cell to lastMove.value) }
 
-    override val numberOfCellsToSolve = game.numberOfCellsToSolve - solvedCells.size
+    override val numberOfCellsToSolve: Int by lazy { game.numberOfCellsToSolve - solvedCells.size }
 
     override operator fun get(cell: SudokuCell): Int? {
-        val value = solvedCells.get(cell)
-        return if (value != null) value else game[cell]
+        return solvedCells[cell] ?: game[cell]
     }
 }
 

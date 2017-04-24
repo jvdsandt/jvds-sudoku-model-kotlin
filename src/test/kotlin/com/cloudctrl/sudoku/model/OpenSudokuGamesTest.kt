@@ -24,4 +24,24 @@ class OpenSudokuGamesTest {
         assertEquals(6, game2[8, 9])
         assertEquals(null, game2[9, 9])
     }
+
+    @Test fun testEasyGames() {
+        val games = OpenSudokuGamesReader().read(javaClass.getResourceAsStream("/easy.opensudoku"))
+        val solvedGames = games.map { it -> it.asSolvedGame() }
+    }
+
+    @Test fun testMediumGames() {
+        val games = OpenSudokuGamesReader().read(javaClass.getResourceAsStream("/medium.opensudoku"))
+        val solvedGames = games.map { it -> it.asSolvedGame() }
+    }
+
+    @Test fun testHardGames() {
+        val games = OpenSudokuGamesReader().read(javaClass.getResourceAsStream("/hard.opensudoku"))
+        val solvedGames = games.map { it -> it.asSolvedGame() }
+    }
+
+    @Test fun testVeryHardGames() {
+        val games = OpenSudokuGamesReader().read(javaClass.getResourceAsStream("/very_hard.opensudoku"))
+        val solvedGames = games.map { it -> it.asSolvedGame() }
+    }
 }
