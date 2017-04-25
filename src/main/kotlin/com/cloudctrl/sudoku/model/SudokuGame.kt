@@ -4,6 +4,9 @@ abstract class SudokuGameBase(val optionsPerCell: Map<SudokuCell, Set<Int>>) {
 
     abstract val game: SudokuGame
 
+    open val board: SudokuBoard
+        get() = this.game.board
+
     abstract val solvedCells: Map<SudokuCell, Int>
 
     abstract val numberOfCellsToSolve: Int
@@ -34,7 +37,7 @@ abstract class SudokuGameBase(val optionsPerCell: Map<SudokuCell, Set<Int>>) {
         if (move != null) {
             return newMove(move)
         }
-        game.board.boxes.forEach { eachBox ->
+        board.boxes.forEach { eachBox ->
             val bmove = eachBox.findMoveWith(optionsPerCell)
             if (bmove != null) {
                 return newMove(bmove)
@@ -50,9 +53,9 @@ abstract class SudokuGameBase(val optionsPerCell: Map<SudokuCell, Set<Int>>) {
     }
 
     fun asArray(): Array<Array<Int>> {
-        val result = Array(game.board.maxY, { _ -> Array(game.board.maxX, { _ -> 0 }) })
-        for (y in 0..game.board.maxY - 1) {
-            for (x in 0..game.board.maxX - 1) {
+        val result = Array(board.maxY, { _ -> Array(board.maxX, { _ -> 0 }) })
+        for (y in 0..board.maxY - 1) {
+            for (x in 0..board.maxX - 1) {
                 result[y][x] = get(x + 1, y + 1) ?: 0
             }
         }
@@ -61,8 +64,8 @@ abstract class SudokuGameBase(val optionsPerCell: Map<SudokuCell, Set<Int>>) {
 
     override fun toString(): String {
         val sb = StringBuilder()
-        for (y in 1..game.board.maxY) {
-            for (x in 1..game.board.maxX) {
+        for (y in 1..board.maxY) {
+            for (x in 1..board.maxX) {
                 sb.append(' ')
                 sb.append(get(x, y) ?: 0)
             }
@@ -72,7 +75,7 @@ abstract class SudokuGameBase(val optionsPerCell: Map<SudokuCell, Set<Int>>) {
     }
 
     private fun newMove(move: SudokuMove): SudokuGameBase {
-        val newOptions = game.board.processMove(optionsPerCell, move)
+        val newOptions = board.processMove(optionsPerCell, move)
         if (newOptions.any { (_, values) -> values.isEmpty() }) {
             return goBackAndMove()
         }
@@ -80,7 +83,7 @@ abstract class SudokuGameBase(val optionsPerCell: Map<SudokuCell, Set<Int>>) {
     }
 
     private fun newGuessMove(move: SudokuMove): SudokuGameBase {
-        val newOptions = game.board.processMove(optionsPerCell, move)
+        val newOptions = board.processMove(optionsPerCell, move)
         if (newOptions.any { (_, values) -> values.isEmpty() }) {
             return goBackAndMove()
         }
@@ -104,7 +107,7 @@ abstract class SudokuGameBase(val optionsPerCell: Map<SudokuCell, Set<Int>>) {
     }
 }
 
-class SudokuGame(val board: SudokuBoard, val fixedCells: Map<SudokuCell, Int>) :
+class SudokuGame(override val board: SudokuBoard, val fixedCells: Map<SudokuCell, Int>) :
         SudokuGameBase(board.getPossibleValuesPerCell(fixedCells)) {
 
     override val game = this

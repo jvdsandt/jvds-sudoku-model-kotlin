@@ -87,10 +87,9 @@ class SudokuBoard(theBoxes: Collection<SudokuBox>) {
         val newOptions = optionsPerCell.toMutableMap()
         newOptions.remove(move.cell)
         cellSharingBoxDo(move.cell, { eachCell ->
-            var newValues = newOptions[eachCell]
+            val newValues = newOptions[eachCell]
             if (newValues != null) {
-                newValues = newValues.minus(move.value)
-                newOptions[eachCell] = newValues
+                newOptions[eachCell] = newValues.minus(move.value)
             }
         })
         return newOptions
