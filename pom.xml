@@ -66,7 +66,30 @@
                 </executions>
             </plugin>
 
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.3</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>bintray-jvdsandt-cloudctrl</id>
+            <name>jvdsandt-cloudctrl</name>
+            <url>https://api.bintray.com/maven/jvdsandt/cloudctrl/com.cloudctrl.sudoku/;publish=1</url>
+        </repository>
+    </distributionManagement>
+
+    <scm>
+        <connection>scm:git:https://github.com/jvdsandt/jvds-sudoku-model-kotlin.git</connection>
+        <developerConnection>scm:git:git@github.com:jvdsandt/jvds-sudoku-model-kotlin.git</developerConnection>
+        <url>https://github.com/jvdsandt/jvds-sudoku-model-kotlin</url>
+        <tag>HEAD</tag>
+    </scm>
 
 </project>
