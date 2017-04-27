@@ -9,7 +9,7 @@
     <version>0.1-SNAPSHOT</version>
 
     <properties>
-        <kotlin.version>1.1.1</kotlin.version>
+        <kotlin.version>1.1.2</kotlin.version>
         <junit.version>4.12</junit.version>
     </properties>
 
