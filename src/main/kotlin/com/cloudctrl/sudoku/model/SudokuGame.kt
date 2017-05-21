@@ -184,7 +184,10 @@ class SudokuGameBuilder(val board: SudokuBoard) {
     }
 }
 
-abstract class SudokuGamePlay(val previousPlay: SudokuGameBase, val lastMove: SudokuMove, val guessed: Boolean, optionsPerCell: Map<SudokuCell, Set<Int>>) :
+abstract class SudokuGamePlay(val previousPlay: SudokuGameBase,
+                              val lastMove: SudokuMove,
+                              val guessed: Boolean,
+                              optionsPerCell: Map<SudokuCell, Set<Int>>) :
         SudokuGameBase(optionsPerCell) {
 
     override val game = previousPlay.game
