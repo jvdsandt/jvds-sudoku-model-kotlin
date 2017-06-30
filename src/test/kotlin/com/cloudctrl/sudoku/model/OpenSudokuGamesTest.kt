@@ -2,6 +2,7 @@ package com.cloudctrl.sudoku.model
 
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 
 class OpenSudokuGamesTest {
@@ -28,20 +29,24 @@ class OpenSudokuGamesTest {
     @Test fun testEasyGames() {
         val games = OpenSudokuGamesReader().read(javaClass.getResourceAsStream("/easy.opensudoku"))
         val solvedGames = games.map { it -> it.asSolvedGame() }
+        assertTrue(solvedGames.all { it -> it.isSolved() })
     }
 
     @Test fun testMediumGames() {
         val games = OpenSudokuGamesReader().read(javaClass.getResourceAsStream("/medium.opensudoku"))
         val solvedGames = games.map { it -> it.asSolvedGame() }
+        assertTrue(solvedGames.all { it -> it.isSolved() })
     }
 
     @Test fun testHardGames() {
         val games = OpenSudokuGamesReader().read(javaClass.getResourceAsStream("/hard.opensudoku"))
         val solvedGames = games.map { it -> it.asSolvedGame() }
+        assertTrue(solvedGames.all { it -> it.isSolved() })
     }
 
     @Test fun testVeryHardGames() {
         val games = OpenSudokuGamesReader().read(javaClass.getResourceAsStream("/very_hard.opensudoku"))
         val solvedGames = games.map { it -> it.asSolvedGame() }
+        assertTrue(solvedGames.all { it -> it.isSolved() })
     }
 }
