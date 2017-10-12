@@ -7,7 +7,7 @@
     <version>0.2-SNAPSHOT</version>
 
     <properties>
-        <kotlin.version>1.1.50</kotlin.version>
+        <kotlin.version>1.1.51</kotlin.version>
         <junit.version>4.12</junit.version>
     </properties>
 
@@ -79,7 +79,7 @@
         <repository>
             <id>bintray-jvdsandt-cloudctrl</id>
             <name>jvdsandt-cloudctrl</name>
-            <url>https://api.bintray.com/maven/jvdsandt/cloudctrl/com.cloudctrl.sudoku/;publish=1</url>
+            <url>https://api.bintray.com/maven/jvdsandt/cloudctrl/sudoku/;publish=1</url>
         </repository>
     </distributionManagement>
 

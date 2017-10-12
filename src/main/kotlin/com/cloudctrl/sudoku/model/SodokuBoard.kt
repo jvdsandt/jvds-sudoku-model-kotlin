@@ -9,7 +9,6 @@ class SudokuBoard(theBoxes: Collection<SudokuBox>) {
             builder.initStandard()
             return builder.newBoard()
         }
-
     }
 
     val boxes = HashSet(theBoxes)
