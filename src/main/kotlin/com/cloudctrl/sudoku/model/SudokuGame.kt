@@ -123,6 +123,9 @@ class SudokuGame(override val board: SudokuBoard, val fixedCells: Map<SudokuCell
     }
 }
 
+/**
+ * Helper class to create SudokuGame instances.
+ */
 class SudokuGameBuilder(val board: SudokuBoard) {
 
     var fixedCells = mutableMapOf<SudokuCell, Int>()
@@ -133,9 +136,6 @@ class SudokuGameBuilder(val board: SudokuBoard) {
 
         fun newGameFromNumberLine(numberLine: String): SudokuGame {
             val board = SudokuBoard.default9x9()
-            if (numberLine.length < board.maxX * board.maxY) {
-                throw IllegalArgumentException("Not enough numbers provided")
-            }
             val builder = SudokuGameBuilder(board)
             builder.initFromNumberLine(numberLine)
             return builder.newGame()
@@ -166,11 +166,14 @@ class SudokuGameBuilder(val board: SudokuBoard) {
     }
 
     fun initFromNumberLine(numberLine: String) {
+        if (numberLine.length < board.maxX * board.maxY) {
+            throw IllegalArgumentException("Not enough numbers provided")
+        }
         for (y in 0..board.maxY - 1) {
             for (x in 0..board.maxX - 1) {
                 val value = numberLine[y * board.maxX + x]
                 if (value < '0' || value > '9') {
-                    throw IllegalArgumentException("Invalid cell value")
+                    throw IllegalArgumentException("Invalid cell value at $x@$y")
                 }
                 if (value != '0') {
                     fix(x + 1, y + 1, Character.digit(value, 10))

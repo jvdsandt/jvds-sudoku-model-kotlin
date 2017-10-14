@@ -1,5 +1,8 @@
 package com.cloudctrl.sudoku.model
 
+/**
+ * Immutable class that represents a Sudoku board.
+ */
 class SudokuBoard(theBoxes: Collection<SudokuBox>) {
 
     companion object {
@@ -21,7 +24,7 @@ class SudokuBoard(theBoxes: Collection<SudokuBox>) {
     }
 
     fun canAdd(cell: SudokuCell, value: Int, fixedCells: Map<SudokuCell, Int>) : Boolean {
-        return boxes.all { it.canAdd(cell, value, fixedCells) }
+        return cell.x in 1..maxX && cell.y in 1..maxY && boxes.all { it.canAdd(cell, value, fixedCells) }
     }
 
     fun boxesFor(cell: SudokuCell, action: (SudokuBox) -> Unit) {
@@ -95,6 +98,9 @@ class SudokuBoard(theBoxes: Collection<SudokuBox>) {
     }
 }
 
+/**
+ * Helper class to build SudokuBoard instances.
+ */
 class SudokuBoardBuilder() {
 
     val boxes = mutableListOf<SudokuBox>()

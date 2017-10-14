@@ -1,5 +1,10 @@
 package com.cloudctrl.sudoku.model
 
+/**
+ * Immutable class that represents a 'box' on a Sudoku board. Usually this
+ * is a square, a row or a column of cells. Multiple cells in the same box
+ * cannot have the same value.
+ */
 class SudokuBox(val name: String, val cells: Set<SudokuCell>) {
 
     constructor(name: String, minCell: SudokuCell, maxCell: SudokuCell) : this(name, createCells(minCell, maxCell))

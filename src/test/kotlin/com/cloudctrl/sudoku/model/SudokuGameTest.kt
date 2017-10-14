@@ -43,6 +43,20 @@ class SudokuGameTest {
         assertFailsWith(IllegalArgumentException::class, { builder.fix(SudokuCell(2, 2), 4) })
     }
 
+    @Test fun testBuildFromLine() {
+        val builder = SudokuGameBuilder()
+        builder.initFromNumberLine("900070003050300800060004109020089001000103000100750060506900040003007010700010006");
+        val game = builder.newGame()
+        assertEquals(9, game[1,1])
+    }
+
+    @Test fun testBuildFromInvalidLine() {
+        val builder = SudokuGameBuilder()
+        assertFailsWith(IllegalArgumentException::class, {
+            builder.initFromNumberLine("--invalid--")
+        })
+    }
+
     @Test fun testSolveSimpleGame() {
         val game = sampleSimpleGame()
         assertEquals(45, game.numberOfCellsToSolve)
