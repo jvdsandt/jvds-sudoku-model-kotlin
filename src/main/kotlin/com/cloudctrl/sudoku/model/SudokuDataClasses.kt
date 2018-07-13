@@ -10,7 +10,11 @@ data class SudokuCell(val x: Int, val y: Int) : Comparable<SudokuCell> {
     }
 }
 
+enum class SudokuMoveReason {
+    ONLY_OPTION, ONLY_PLACE, GUESS, UNKNOWN
+}
+
 /**
  * Data class to represent a cell with a value on a Sudoku board.
  */
-data class SudokuMove(val cell: SudokuCell, val value: Int)
+data class SudokuMove(val cell: SudokuCell, val value: Int, val reason: SudokuMoveReason = SudokuMoveReason.UNKNOWN)

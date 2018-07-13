@@ -48,7 +48,7 @@ class SudokuBox(val name: String, val cells: Set<SudokuCell>) {
         }
         for ((eachValue, eachCells) in cellsPerValue) {
             if (eachCells.size == 1) {
-                return SudokuMove(eachCells.single(), eachValue)
+                return SudokuMove(eachCells.single(), eachValue, SudokuMoveReason.ONLY_PLACE)
             }
         }
         return null

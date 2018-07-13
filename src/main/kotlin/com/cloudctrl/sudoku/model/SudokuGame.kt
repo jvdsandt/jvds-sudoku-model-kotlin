@@ -1,5 +1,8 @@
 package com.cloudctrl.sudoku.model
 
+/**
+ * Base class for Sudoku games and
+ */
 abstract class SudokuGameBase(val optionsPerCell: Map<SudokuCell, Set<Int>>) {
 
     abstract val game: SudokuGame
@@ -23,10 +26,14 @@ abstract class SudokuGameBase(val optionsPerCell: Map<SudokuCell, Set<Int>>) {
 
     fun isSolved() = numberOfCellsToSolve == 0
 
+    /**
+     * Search the optionPerCell map for a cell that has only one option.
+     * If present answer a move for this cell, otherwise answer null.
+     */
     fun firstSingleOptionMove(): SudokuMove? {
         for ((eachCell, cellOptions) in optionsPerCell) {
             if (cellOptions.size == 1) {
-                return SudokuMove(eachCell, cellOptions.single())
+                return SudokuMove(eachCell, cellOptions.single(), SudokuMoveReason.ONLY_OPTION)
             }
         }
         return null
@@ -43,7 +50,7 @@ abstract class SudokuGameBase(val optionsPerCell: Map<SudokuCell, Set<Int>>) {
                 return newMove(bmove)
             }
         }
-        return newGuessMove(takeGuess())
+        return newMove(takeGuess(), true)
     }
 
     abstract fun goBackAndMove(): SudokuGamePlay
@@ -74,20 +81,12 @@ abstract class SudokuGameBase(val optionsPerCell: Map<SudokuCell, Set<Int>>) {
         return sb.toString()
     }
 
-    private fun newMove(move: SudokuMove): SudokuGameBase {
+    private fun newMove(move: SudokuMove, guessed: Boolean = false): SudokuGameBase {
         val newOptions = board.processMove(optionsPerCell, move)
         if (newOptions.any { (_, values) -> values.isEmpty() }) {
             return goBackAndMove()
         }
-        return SudokuAutoGame(this, move, false, newOptions)
-    }
-
-    private fun newGuessMove(move: SudokuMove): SudokuGameBase {
-        val newOptions = board.processMove(optionsPerCell, move)
-        if (newOptions.any { (_, values) -> values.isEmpty() }) {
-            return goBackAndMove()
-        }
-        return SudokuAutoGame(this, move, true, newOptions)
+        return SudokuAutoGame(this, move, guessed, newOptions)
     }
 
     private fun takeGuess(): SudokuMove {
@@ -100,7 +99,7 @@ abstract class SudokuGameBase(val optionsPerCell: Map<SudokuCell, Set<Int>>) {
             }
         }
         if (cell != null && values != null) {
-            return SudokuMove(cell, values.first())
+            return SudokuMove(cell, values.first(), SudokuMoveReason.GUESS)
         } else {
             throw IllegalStateException()
         }
