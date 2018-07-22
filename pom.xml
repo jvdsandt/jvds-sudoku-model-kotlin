@@ -4,7 +4,7 @@
 
     <groupId>com.cloudctrl.sudoku</groupId>
     <artifactId>jvds-sudoku-model-kotlin</artifactId>
-    <version>0.5-SNAPSHOT</version>
+    <version>0.5</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -124,7 +124,7 @@
         <connection>scm:git:https://github.com/jvdsandt/jvds-sudoku-model-kotlin.git</connection>
         <developerConnection>scm:git:git@github.com:jvdsandt/jvds-sudoku-model-kotlin.git</developerConnection>
         <url>https://github.com/jvdsandt/jvds-sudoku-model-kotlin</url>
-        <tag>HEAD</tag>
+        <tag>jvds-sudoku-model-kotlin-0.5</tag>
     </scm>
 
 </project>
