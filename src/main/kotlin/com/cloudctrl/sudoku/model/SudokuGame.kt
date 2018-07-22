@@ -69,7 +69,17 @@ abstract class SudokuGameBase(val optionsPerCell: Map<SudokuCell, Set<Int>>) {
         return result
     }
 
-    override fun toString(): String {
+    fun asNumberLine(): String {
+        val sb = StringBuilder()
+        for (y in 1..board.maxY) {
+            for (x in 1..board.maxX) {
+                sb.append(get(x, y) ?: 0)
+            }
+        }
+        return sb.toString()
+    }
+
+    fun asNumberLines(): String {
         val sb = StringBuilder()
         for (y in 1..board.maxY) {
             for (x in 1..board.maxX) {
@@ -79,6 +89,10 @@ abstract class SudokuGameBase(val optionsPerCell: Map<SudokuCell, Set<Int>>) {
             sb.append("\n")
         }
         return sb.toString()
+    }
+
+    override fun toString(): String {
+        return asNumberLines()
     }
 
     private fun newMove(move: SudokuMove, guessed: Boolean = false): SudokuGameBase {

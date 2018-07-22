@@ -1,10 +1,7 @@
 package com.cloudctrl.sudoku.model
 
 import org.junit.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 class SudokuGameTest {
 
@@ -48,6 +45,8 @@ class SudokuGameTest {
         builder.initFromNumberLine("900070003050300800060004109020089001000103000100750060506900040003007010700010006");
         val game = builder.newGame()
         assertEquals(9, game[1,1])
+        assertEquals(6, game[9,9])
+        assertNull(game[2,1])
     }
 
     @Test fun testBuildFromInvalidLine() {
