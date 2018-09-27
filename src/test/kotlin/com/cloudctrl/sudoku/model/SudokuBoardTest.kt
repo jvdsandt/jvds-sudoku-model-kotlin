@@ -23,7 +23,7 @@ class SudokuBoardTest {
     }
 
     @Test fun canAdd() {
-        val board = SudokuBoard.default9x9();
+        val board = SudokuBoard.default9x9()
         assertTrue { board.canAdd(SudokuCell(3, 3), 3, emptyMap()) }
         assertFalse { board.canAdd(SudokuCell(0, 3), 3, emptyMap()) }
         assertFalse { board.canAdd(SudokuCell(3, 0), 3, emptyMap()) }

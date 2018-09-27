@@ -7,7 +7,7 @@ import javax.xml.parsers.DocumentBuilderFactory
 
 class OpenSudokuGamesReader {
 
-    val xmlDocBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+    val xmlDocBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()!!
 
     fun read(stream: InputStream): List<SudokuGame> {
 

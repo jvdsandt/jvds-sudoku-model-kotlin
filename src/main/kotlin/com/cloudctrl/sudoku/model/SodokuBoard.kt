@@ -101,7 +101,7 @@ class SudokuBoard(theBoxes: Collection<SudokuBox>) {
 /**
  * Helper class to build SudokuBoard instances.
  */
-class SudokuBoardBuilder() {
+class SudokuBoardBuilder {
 
     val boxes = mutableListOf<SudokuBox>()
 
@@ -111,15 +111,13 @@ class SudokuBoardBuilder() {
 
     fun initStandard(maxX: Int = 9, maxY: Int = 9) {
         for (i in 1..maxY) {
-            addBox("row-${i}", SudokuCell(1, i), SudokuCell(maxX, i))
+            addBox("row-$i", SudokuCell(1, i), SudokuCell(maxX, i))
         }
         for (i in 1..maxX) {
-            addBox("column-${i}", SudokuCell(i, 1), SudokuCell(i, maxY))
+            addBox("column-$i", SudokuCell(i, 1), SudokuCell(i, maxY))
         }
         for (ypos in 1..maxY step 3) {
-            for (xpos in 1..maxX step 3) {
-                addBox("box-${xpos}x${ypos}", SudokuCell(xpos, ypos), SudokuCell(xpos+2, ypos+2))
-            }
+            for (xpos in 1..maxX step 3) addBox("box-${xpos}x$ypos", SudokuCell(xpos, ypos), SudokuCell(xpos+2, ypos+2))
         }
     }
 

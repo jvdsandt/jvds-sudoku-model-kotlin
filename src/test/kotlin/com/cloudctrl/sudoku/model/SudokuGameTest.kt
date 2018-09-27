@@ -42,7 +42,7 @@ class SudokuGameTest {
 
     @Test fun testBuildFromLine() {
         val builder = SudokuGameBuilder()
-        builder.initFromNumberLine("900070003050300800060004109020089001000103000100750060506900040003007010700010006");
+        builder.initFromNumberLine("900070003050300800060004109020089001000103000100750060506900040003007010700010006")
         val game = builder.newGame()
         assertEquals(9, game[1,1])
         assertEquals(6, game[9,9])
