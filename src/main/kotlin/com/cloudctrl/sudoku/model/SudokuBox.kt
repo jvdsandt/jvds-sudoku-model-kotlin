@@ -10,11 +10,11 @@ class SudokuBox(val name: String, val cells: Set<SudokuCell>) {
     constructor(name: String, minCell: SudokuCell, maxCell: SudokuCell) : this(name, createCells(minCell, maxCell))
 
     fun maxX(): Int {
-        return cells.stream().mapToInt({ it.x }).max().asInt
+        return cells.stream().mapToInt { it.x }.max().asInt
     }
 
     fun maxY(): Int {
-        return cells.stream().mapToInt({ it.y }).max().asInt
+        return cells.stream().mapToInt { it.y }.max().asInt
     }
 
     operator fun contains(cell: SudokuCell): Boolean = cells.contains(cell)
@@ -23,7 +23,7 @@ class SudokuBox(val name: String, val cells: Set<SudokuCell>) {
         if (cell !in this) {
             return true
         }
-        return !(cells.any { fixedCells.get(it) == value })
+        return !(cells.any { fixedCells[it] == value })
     }
 
     fun getPossibleValues(cell: SudokuCell, values: Set<Int>, fixedCells: Map<SudokuCell, Int>) : Set<Int> {
@@ -43,7 +43,7 @@ class SudokuBox(val name: String, val cells: Set<SudokuCell>) {
         val cellsPerValue = mutableMapOf<Int, MutableSet<SudokuCell>>()
         cells.forEach { eachCell ->
             (options.getOrDefault(eachCell, emptySet())).forEach { eachValue ->
-                cellsPerValue.getOrPut(eachValue, { mutableSetOf() }).add(eachCell)
+                cellsPerValue.getOrPut(eachValue) { mutableSetOf() }.add(eachCell)
             }
         }
         for ((eachValue, eachCells) in cellsPerValue) {

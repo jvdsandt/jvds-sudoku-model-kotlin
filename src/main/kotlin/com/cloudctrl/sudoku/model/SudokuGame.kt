@@ -60,9 +60,9 @@ abstract class SudokuGameBase(val optionsPerCell: Map<SudokuCell, Set<Int>>) {
     }
 
     fun asArray(): Array<Array<Int>> {
-        val result = Array(board.maxY, { _ -> Array(board.maxX, { _ -> 0 }) })
-        for (y in 0..board.maxY - 1) {
-            for (x in 0..board.maxX - 1) {
+        val result = Array(board.maxY) { _ -> Array(board.maxX) { _ -> 0 } }
+        for (y in 0..<board.maxY) {
+            for (x in 0..<board.maxX) {
                 result[y][x] = get(x + 1, y + 1) ?: 0
             }
         }
@@ -182,8 +182,8 @@ class SudokuGameBuilder(val board: SudokuBoard) {
         if (numberLine.length < board.maxX * board.maxY) {
             throw IllegalArgumentException("Not enough numbers provided")
         }
-        for (y in 0..board.maxY - 1) {
-            for (x in 0..board.maxX - 1) {
+        for (y in 0..<board.maxY) {
+            for (x in 0..<board.maxX) {
                 val value = numberLine[y * board.maxX + x]
                 if (value < '0' || value > '9') {
                     throw IllegalArgumentException("Invalid cell value at $x@$y")

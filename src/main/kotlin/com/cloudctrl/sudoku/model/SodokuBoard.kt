@@ -69,9 +69,9 @@ class SudokuBoard(theBoxes: Collection<SudokuBox>) {
 
     fun getPossibleValues(cell : SudokuCell, fixedCells: Map<SudokuCell, Int>) : Set<Int> {
         var values = allValues
-        boxesFor(cell, { eachBox ->
+        boxesFor(cell) { eachBox ->
             values = eachBox.getPossibleValues(cell, values, fixedCells)
-        })
+        }
         return values
     }
 
@@ -88,12 +88,12 @@ class SudokuBoard(theBoxes: Collection<SudokuBox>) {
     fun processMove(optionsPerCell: Map<SudokuCell, Set<Int>>, move: SudokuMove) : Map<SudokuCell, Set<Int>> {
         val newOptions = optionsPerCell.toMutableMap()
         newOptions.remove(move.cell)
-        cellSharingBoxDo(move.cell, { eachCell ->
+        cellSharingBoxDo(move.cell) { eachCell ->
             val newValues = newOptions[eachCell]
             if (newValues != null) {
                 newOptions[eachCell] = newValues.minus(move.value)
             }
-        })
+        }
         return newOptions
     }
 }
