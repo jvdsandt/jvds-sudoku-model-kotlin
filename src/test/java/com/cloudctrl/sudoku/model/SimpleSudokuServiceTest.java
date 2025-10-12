@@ -1,15 +1,16 @@
 package com.cloudctrl.sudoku.model;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class SimpleSudokuServiceTest {
 
     private SimpleSudokuService service;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         service = new SimpleSudokuServiceImpl();
     }

@@ -1,6 +1,5 @@
 package com.cloudctrl.sudoku.model
 
-import org.junit.Test
 import kotlin.test.*
 
 class SudokuGameTest {

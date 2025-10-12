@@ -3,8 +3,6 @@ package com.cloudctrl.sudoku.model
 import org.w3c.dom.Element
 import java.io.InputStream
 import javax.xml.parsers.DocumentBuilderFactory
-
-
 class OpenSudokuGamesReader {
 
     val xmlDocBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()!!
